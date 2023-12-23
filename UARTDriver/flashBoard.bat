@@ -1,1 +1,1 @@
-COPY D:\UARTDriver\UARTDriver\build\UartDriver.bin E:\UARTDriver.bin
+COPY D:\UARTDriver\build\UartDriver.bin E:\UARTDriver.bin
