@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "stm32f4xx_hal.h": "c",
+        "stm32f4xx.h": "c",
+        "usb_host.h": "c",
+        "usbh_core.h": "c",
+        "usbh_def.h": "c",
+        "usbh_pipes.h": "c",
+        "usbh_conf.h": "c",
+        "usbh_ioreq.h": "c",
+        "usbh_cdc.h": "c",
+        "cmsis_os.h": "c",
+        "main.h": "c",
+        "stdlib.h": "c",
+        "application.h": "c",
+        "stdbool.h": "c"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}

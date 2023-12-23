@@ -1,0 +1,4 @@
+D:/UARTDriver/UARTDriver/build/CMakeFiles/UartDriver.out.dir
+D:/UARTDriver/UARTDriver/build/CMakeFiles/flashBoard.dir
+D:/UARTDriver/UARTDriver/build/CMakeFiles/edit_cache.dir
+D:/UARTDriver/UARTDriver/build/CMakeFiles/rebuild_cache.dir
