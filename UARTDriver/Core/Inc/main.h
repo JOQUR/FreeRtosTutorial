@@ -66,6 +66,8 @@ void Error_Handler(void);
 #define BTN_EVENT_GPIO_Port GPIOD
 #define TIM_EVENT_Pin GPIO_PIN_14
 #define TIM_EVENT_GPIO_Port GPIOD
+#define BLUE_LED_Pin GPIO_PIN_15
+#define BLUE_LED_GPIO_Port GPIOD
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -5,3 +5,4 @@
 
 void Application_Init(void* params);
 void Application_IntHandler(void* params);
+void Application_UARTHandler(void* params);

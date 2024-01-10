@@ -59,10 +59,12 @@
 
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim6;
+extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
 
 extern SemaphoreHandle_t xSemaphore;
 extern SemaphoreHandle_t xTimerSemaphor;
+extern SemaphoreHandle_t xUartSemaphore;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -89,7 +91,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  NVIC_SystemReset();
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -204,17 +206,37 @@ void EXTI0_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles USART2 global interrupt.
+  */
+void USART2_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART2_IRQn 0 */
+
+  /* USER CODE END USART2_IRQn 0 */
+  HAL_UART_IRQHandler(&huart2);
+  /* USER CODE BEGIN USART2_IRQn 1 */
+  __disable_irq();
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  xSemaphoreGiveFromISR(xUartSemaphore, &xHigherPriorityTaskWoken);
+  portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+  __enable_irq();
+  /* USER CODE END USART2_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM6 global interrupt, DAC1 and DAC2 underrun error interrupts.
   */
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
+  __disable_irq();
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
   xSemaphoreGiveFromISR(xTimerSemaphor, &xHigherPriorityTaskWoken);
   portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+  __enable_irq();
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 

@@ -41,6 +41,8 @@
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim6;
 
+UART_HandleTypeDef huart2;
+
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
 
@@ -50,6 +52,7 @@ osThreadId defaultTaskHandle;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_USART2_UART_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
@@ -61,6 +64,7 @@ void StartDefaultTask(void const * argument);
 uint64_t delay = 100;
 SemaphoreHandle_t xSemaphore = NULL;
 SemaphoreHandle_t xTimerSemaphor = NULL;
+SemaphoreHandle_t xUartSemaphore = NULL;
 /* USER CODE END 0 */
 
 /**
@@ -91,6 +95,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM6_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   /* USER CODE END 2 */
 
@@ -102,6 +107,7 @@ int main(void)
   /* add semaphores, ... */
   vSemaphoreCreateBinary(xSemaphore);
   vSemaphoreCreateBinary(xTimerSemaphor);
+  vSemaphoreCreateBinary(xUartSemaphore);
   configASSERT(xSemaphore != NULL);
   /* USER CODE END RTOS_SEMAPHORES */
 
@@ -122,6 +128,7 @@ int main(void)
   /* add threads, ... */
   (void)xTaskCreate(Application_Init, "Start of App", configMINIMAL_STACK_SIZE, &delay, tskIDLE_PRIORITY, NULL);
   (void)xTaskCreate(Application_IntHandler, "ISR Handler", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+  (void)xTaskCreate(Application_UARTHandler, "UART Driver", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -224,6 +231,39 @@ static void MX_TIM6_Init(void)
 }
 
 /**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -240,7 +280,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, BTN_EVENT_Pin|TIM_EVENT_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, BTN_EVENT_Pin|TIM_EVENT_Pin|BLUE_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : USR_BTN_Pin */
   GPIO_InitStruct.Pin = USR_BTN_Pin;
@@ -248,8 +288,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USR_BTN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED_GREEN_Pin BTN_EVENT_Pin TIM_EVENT_Pin */
-  GPIO_InitStruct.Pin = LED_GREEN_Pin|BTN_EVENT_Pin|TIM_EVENT_Pin;
+  /*Configure GPIO pins : LED_GREEN_Pin BTN_EVENT_Pin TIM_EVENT_Pin BLUE_LED_Pin */
+  GPIO_InitStruct.Pin = LED_GREEN_Pin|BTN_EVENT_Pin|TIM_EVENT_Pin|BLUE_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
